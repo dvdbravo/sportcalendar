@@ -1,0 +1,78 @@
+body{
+    background-color: #d72828 !important;
+}
+
+.container h1{
+    color: #fff;
+}
+
+ @media (min-width: 768px){
+.container, .container-md, .container-sm {
+    max-width: 90% !important;
+}
+}
+.filter-sports{
+    background-color: #fff;
+}
+.list-group{
+    background-color: #fff;
+}
+.bg-soccer{
+    background-color: #00d9ff30 !important;
+}
+.bg-baseball{
+    background-color: #cbbfff9d !important;
+}
+.bg-basketball{
+    background-color: #ffcf4c5e !important;
+}
+
+.btn-soccer{
+    background-color: #00d9ff !important;
+    border-color: #00d9ff !important;;
+}
+.btn-baseball{
+    background-color: #cbbfff !important;
+    border-color: #cbbfff !important;;
+}
+.btn-basketball{
+    background-color: #ffcf4c !important;
+    border-color: #ffcf4c !important;;
+}
+.btn-football{
+    background-color: #ff8c90 !important;
+    border-color: #ff8c90 !important;;
+}
+.btn-hockey{
+    background-color: #e2e2e2 !important;
+    border-color: #e2e2e2 !important;;
+}
+
+table.table-light{
+    text-align: center;
+}
+.table-dark>th{
+    background-color: #343a40 !important;
+}
+
+.table td, .table th{
+    background-color: transparent !important;
+}
+.table-light tbody+tbody, .table-light td, .table-light th, .table-light thead th{
+    border: none !important;
+}
+.table-light{
+    border-radius: 5px;
+}
+.table thead th{
+    border-bottom: 2px solid #dee2e6 !important;
+}
+
+td.day{
+    cursor: pointer;
+}ß
+.table td, .table th {
+    padding: .75rem 0.25rem;}
+.day:hover{
+    color:#d72828;
+    }

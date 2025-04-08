@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caliente.mx Calendar</title>
+  <!-- Bootstrap CSS -->
+  <link href="style.css" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+  <!-- -->
+  <h1> Calendario | <span id="titleMonth">Agosto</span> <span id="titleYear">2024</span></h1>
+  <div class="calendar wrap">
+    <div class="row">
+      <div class="col-12 col-md-6 sticky">
+
+<!-- <label for="start">Start date:</label>
+<input type="date" id="inputCal" name="trip-start" value="2018-07-22" min="2018-01-01" max="2018-12-31" /> -->
+      
+        <table class="table table-light">
+          <thead>
+            <tr>
+              <th scope="col">Sun</th>
+              <th scope="col">Mon</th>
+              <th scope="col">Tue</th>
+              <th scope="col">Wed</th>
+              <th scope="col">Thu</th>
+              <th scope="col">Fri</th>
+              <th scope="col">Sat</th>
+            </tr>
+          </thead>
+          <tbody id="calendar-body">
+            <!-- Calendar days will be inserted here dynamically -->
+          </tbody>
+        </table>
+        
+      </div>
+      <div class="col-12 col-md-6 main"><ul id="sportsScores" class="list-group"></ul></div>
+    </div>
+  </div>
+  <!-- <div class="row">
+    <div class="col">
+      <div class="input-group mb-3">
+        <button class="btn btn-primary btn-soccer btn-lg" type="button" onclick="sportVal();" value="1">⚽️</button>
+        <button class="btn btn-primary btn-baseball btn-lg" type="button" onclick="sportVal();" value="2">⚾️</button>
+        <button class="btn btn-primary btn-basketball btn-lg" type="button" onclick="sportVal();" value="3">🏀</button>
+        <button class="btn btn-primary btn-football btn-lg" type="button" onclick="sportVal();" value="4">🏈</button>
+        <button class="btn btn-primary btn-hockey btn-lg" type="button" onclick="sportVal();" value="5">🏒</button>
+        <button class="btn btn-light btn-lg" type="button" onclick="sportVal();" value="6">🎾</button> 
+        <button class="btn btn-light btn-lg" type="button" onclick="sportVal();" value="7">🏎️</button> 
+        <button class="btn btn-light btn-lg" type="button" onclick="sportVal();" value="8">🥊</button>
+      </div>
+    </div>
+  </div> -->
+  
+</div>
+
+<!-- Bootstrap JS and jQuery (required for Bootstrap) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script src="script.js"></script>
+  
+
+</body>
+</html>
