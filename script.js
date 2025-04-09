@@ -47,7 +47,9 @@ titleYear.innerHTML = currYear;
 
   // Add click event listener to each day
   $('.day').click(function() {
+    $(".day").removeClass("day-active");
     const dayNumber = $(this).data("day");
+    $(this).addClass("day-active");
     // Here you can perform any action you want with the clicked day numbers
     // Function Call
     fetchAndDisplayScores(currYear, currMonth, ("0" + dayNumber).slice(-2));
@@ -309,7 +311,7 @@ function createListItem(event, emoji) {
   const formattedTime = date.toLocaleString("es-MX", { timeStyle: "short" });
   const formattedDate = date.toLocaleString("es-MX", { dateStyle: "long" });
   listItem.innerHTML = `
-      <h5>${emoji} ${event.competitions[0].competitors[0].team.displayName} vs ${event.competitions[0].competitors[1].team.displayName}</h5>
+    <h5>${emoji} ${event.competitions[0].competitors[0].team.displayName} vs ${event.competitions[0].competitors[1].team.displayName}</h5>
       <p><strong>${formattedTime}</strong> | ${formattedDate}</p>
     `;
   return listItem;
@@ -318,14 +320,15 @@ function createListItem(event, emoji) {
 function createListItemTennisNew(event, emoji) {
   const listItem = document.createElement("div");
   let eventNum = event.groupings[0].competitions.length;
+  const fecha = new Date(event.date);
   for (let i = 0; i < eventNum; i++){
-    let date = new Date(event.groupings[0].competitions[i].date);
+    const date = new Date(event.groupings[0].competitions[i].date);
     let formattedTime = date.toLocaleString("es-MX", { timeStyle: "short" });
     let formattedDate = date.toLocaleString("es-MX", { dateStyle: "long" });
     let DayNew = date.getDate();
     if (DayNew === parseInt(currDay)) {
       console.log(formattedDate);
-      listItem.innerHTML += `<li class="list-group-item">Daynew${currDay}
+      listItem.innerHTML += `<li class="list-group-item">
       <h5>${emoji} ${event.name} - ${event.groupings[0].competitions[i].competitors[0].athlete.displayName} vs ${event.groupings[0].competitions[i].competitors[1].athlete.displayName}</h5>
     <strong>${formattedTime}</strong> | ${formattedDate}</li>`;
     }

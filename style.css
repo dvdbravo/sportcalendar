@@ -5,7 +5,9 @@ body{
 .container h1{
     color: #fff;
 }
-
+.day-active{
+    background-color: #e0e0e0 !important;
+}
  @media (min-width: 768px){
 .container, .container-md, .container-sm {
     max-width: 90% !important;
@@ -56,7 +58,7 @@ table.table-light{
 }
 
 .table td, .table th{
-    background-color: transparent !important;
+    background-color: transparent;
 }
 .table-light tbody+tbody, .table-light td, .table-light th, .table-light thead th{
     border: none !important;
@@ -76,3 +78,4 @@ td.day{
 .day:hover{
     color:#d72828;
     }
+
