@@ -1,59 +1,89 @@
+
+
+async function loadEvents() {
+  const res = await fetch("https://cyxhkictiiyuaenyfcfo.supabase.co", {
+    headers: {
+      apikey:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5eGhraWN0aWl5dWFlbnlmY2ZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMxODMxOTIsImV4cCI6MjA1ODc1OTE5Mn0.hYLW52auUD5u3SbW5L8wKxR45hvYIAfwAzRbDl2TugA",
+      authorization:
+        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5eGhraWN0aWl5dWFlbnlmY2ZvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0MzE4MzE5MiwiZXhwIjoyMDU4NzU5MTkyfQ.7OlnDg-Q4hB1hsa07DkE7eZhMy_Hd0E6Jgzd3fkIYao",
+    },
+  });
+  const data = await res.json();
+  console.log(data);
+
+}
+loadEvents();
 const d = new Date();
 let currYear, currMonth, currDay;
 currYear = d.getFullYear();
 currMonth = ("0" + (d.getMonth() + 1)).slice(-2);
-currDay = ("0" + (d.getDate())).slice(-2);
+currDay = ("0" + d.getDate()).slice(-2);
 nameDay = d.getDay();
-let titleMonth = document.querySelector('#titleMonth'); 
-let titleYear = document.querySelector("#titleYear"); 
+let titleMonth = document.querySelector("#titleMonth");
+let titleYear = document.querySelector("#titleYear");
 console.log(currDay, currMonth);
 
-let monthName = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+let monthName = [
+  "Enero",
+  "Febrero",
+  "Marzo",
+  "Abril",
+  "Mayo",
+  "Junio",
+  "Julio",
+  "Agosto",
+  "Septiembre",
+  "Octubre",
+  "Noviembre",
+  "Diciembre",
+];
 
 titleMonth.innerHTML = monthName[parseInt(currMonth) - 1];
 titleYear.innerHTML = currYear;
 
- // Function to generate the calendar
-  function generateCalendar(year, month) {
-   const startDate = new Date(year, month, 1);
-    const endDate = new Date(year, month + 1, 0);
-    const daysInMonth = endDate.getDate();
-    const startDay = startDate.getDay();
-    let html = '';
-    console.log("Start day: " + startDay + " startDate: " + startDate);
 
-    let day = 1;
-    for (let i = 0; i < 6; i++) {
-      html += '<tr>';
-      for (let j = 0; j < 7; j++) {
-        if (i === 0 && j < startDay) {
-          html += '<td></td>';
-        } else if (day > daysInMonth) {
-          break;
-        } else {
-          html += `<td class='day table-light' value='${day}' data-day='${day}'>${day}</td>`;
-          day++;
-        }
+// Function to generate the calendar
+function generateCalendar(year, month) {
+  const startDate = new Date(year, month, 1);
+  const endDate = new Date(year, month + 1, 0);
+  const daysInMonth = endDate.getDate();
+  const startDay = startDate.getDay();
+  let html = "";
+  console.log("Start day: " + startDay + " startDate: " + startDate);
+
+  let day = 1;
+  for (let i = 0; i < 6; i++) {
+    html += "<tr>";
+    for (let j = 0; j < 7; j++) {
+      if (i === 0 && j < startDay) {
+        html += "<td></td>";
+      } else if (day > daysInMonth) {
+        break;
+      } else {
+        html += `<td class='day table-light' value='${day}' data-day='${day}'>${day}</td>`;
+        day++;
       }
-      html += '</tr>';
     }
-
-    $('#calendar-body').html(html);
+    html += "</tr>";
   }
 
-  // Generate calendar for current month - currentDate.getMonth()
-  const currentDate = new Date();
-  generateCalendar(currentDate.getFullYear(), currMonth - 1);
+  $("#calendar-body").html(html);
+}
 
-  // Add click event listener to each day
-  $('.day').click(function() {
-    $(".day").removeClass("day-active");
-    const dayNumber = $(this).data("day");
-    $(this).addClass("day-active");
-    // Here you can perform any action you want with the clicked day numbers
-    // Function Call
-    fetchAndDisplayScores(currYear, currMonth, ("0" + dayNumber).slice(-2));
-  });
+// Generate calendar for current month - currentDate.getMonth()
+const currentDate = new Date();
+generateCalendar(currentDate.getFullYear(), currMonth - 1);
+
+// Add click event listener to each day
+$(".day").click(function () {
+  $(".day").removeClass("day-active");
+  const dayNumber = $(this).data("day");
+  $(this).addClass("day-active");
+  // Here you can perform any action you want with the clicked day numbers
+  // Function Call
+  fetchAndDisplayScores(currYear, currMonth, ("0" + dayNumber).slice(-2));
+});
 // Function to fetch scores from the API and display them in the list
 function fetchAndDisplayScores(Year, Month, Day) {
   // Fetch data from different sports
@@ -308,8 +338,8 @@ function createListItem(event, emoji) {
   const listItem = document.createElement("li");
   listItem.className = "list-group-item";
   const date = new Date(event.date);
-  const formattedTime = date.toLocaleString("es-MX", { timeStyle: "short" });
-  const formattedDate = date.toLocaleString("es-MX", { dateStyle: "long" });
+  const formattedTime = date.toLocaleString("en-UK", { timeStyle: "short" });
+  const formattedDate = date.toLocaleString("en-UK", { dateStyle: "long" });
   listItem.innerHTML = `
     <h5>${emoji} ${event.competitions[0].competitors[0].team.displayName} vs ${event.competitions[0].competitors[1].team.displayName}</h5>
       <p><strong>${formattedTime}</strong> | ${formattedDate}</p>
@@ -321,7 +351,7 @@ function createListItemTennisNew(event, emoji) {
   const listItem = document.createElement("div");
   let eventNum = event.groupings[0].competitions.length;
   const fecha = new Date(event.date);
-  for (let i = 0; i < eventNum; i++){
+  for (let i = 0; i < eventNum; i++) {
     const date = new Date(event.groupings[0].competitions[i].date);
     let formattedTime = date.toLocaleString("es-MX", { timeStyle: "short" });
     let formattedDate = date.toLocaleString("es-MX", { dateStyle: "long" });
@@ -333,7 +363,7 @@ function createListItemTennisNew(event, emoji) {
     <strong>${formattedTime}</strong> | ${formattedDate}</li>`;
     }
   }
-return listItem;
+  return listItem;
 }
 // List items
 function createListItemFuno(event, emoji) {
