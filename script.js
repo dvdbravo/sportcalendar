@@ -1,23 +1,16 @@
+let prevMonth = document.querySelector("#prevMonth");
+let nextMonth = document.querySelector("#nextMonth");
+let current = 0;
 
+prevMonth.addEventListener('click', function(){
+  current = current + 1;
+  console.log(current)
+});
 
-async function loadEvents() {
-  const res = await fetch("https://cyxhkictiiyuaenyfcfo.supabase.co", {
-    headers: {
-      apikey:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5eGhraWN0aWl5dWFlbnlmY2ZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMxODMxOTIsImV4cCI6MjA1ODc1OTE5Mn0.hYLW52auUD5u3SbW5L8wKxR45hvYIAfwAzRbDl2TugA",
-      authorization:
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5eGhraWN0aWl5dWFlbnlmY2ZvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0MzE4MzE5MiwiZXhwIjoyMDU4NzU5MTkyfQ.7OlnDg-Q4hB1hsa07DkE7eZhMy_Hd0E6Jgzd3fkIYao",
-    },
-  });
-  const data = await res.json();
-  console.log(data);
-
-}
-loadEvents();
 const d = new Date();
 let currYear, currMonth, currDay;
 currYear = d.getFullYear();
-currMonth = ("0" + (d.getMonth() + 1)).slice(-2);
+currMonth = ("0" + (d.getMonth() + 1 + current)).slice(-2);
 currDay = ("0" + d.getDate()).slice(-2);
 nameDay = d.getDay();
 let titleMonth = document.querySelector("#titleMonth");
@@ -41,6 +34,8 @@ let monthName = [
 
 titleMonth.innerHTML = monthName[parseInt(currMonth) - 1];
 titleYear.innerHTML = currYear;
+
+
 
 
 // Function to generate the calendar

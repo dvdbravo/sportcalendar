@@ -2,7 +2,7 @@ body{
     background-color: #d72828 !important;
 }
 
-.container h1{
+h1, h2{
     color: #fff;
 }
 .day-active{
@@ -12,6 +12,21 @@ body{
 .container, .container-md, .container-sm {
     max-width: 90% !important;
 }
+}
+.switch-month{
+ display:flex;
+ justify-content:space-between;
+ padding: 10px;
+}
+.switch-arrow{
+    background-color: #d72828;
+    border: 2px solid #fff;
+    color: #fff;
+    border-radius: 15%;
+    font-size: 1.5rem;
+}
+.switch-arrow:hover{
+    opacity: 0.8;
 }
 .filter-sports{
     background-color: #fff;
