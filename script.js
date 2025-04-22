@@ -3,8 +3,11 @@ let nextMonth = document.querySelector("#nextMonth");
 let current = 0;
 
 prevMonth.addEventListener('click', function(){
+  current = current - 1;
+});
+nextMonth.addEventListener("click", function () {
   current = current + 1;
-  console.log(current)
+  console.log(current);
 });
 
 const d = new Date();
