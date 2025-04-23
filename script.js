@@ -1,26 +1,16 @@
-let prevMonth = document.querySelector("#prevMonth");
-let nextMonth = document.querySelector("#nextMonth");
-let current = 0;
+// DOM Elements
+const prevMonth = document.querySelector("#prevMonth");
+const nextMonth = document.querySelector("#nextMonth");
+const titleMonth = document.querySelector("#titleMonth");
+const titleYear = document.querySelector("#titleYear");
+const sportsScoresList = document.getElementById("sportsScores");
 
-prevMonth.addEventListener('click', function(){
-  current = current - 1;
-});
-nextMonth.addEventListener("click", function () {
-  current = current + 1;
-  console.log(current);
-});
-
-const d = new Date();
+// Date and Calendar Variables
+let monthOffset = 0;
+const currentDate = new Date();
 let currYear, currMonth, currDay;
-currYear = d.getFullYear();
-currMonth = ("0" + (d.getMonth() + 1 + current)).slice(-2);
-currDay = ("0" + d.getDate()).slice(-2);
-nameDay = d.getDay();
-let titleMonth = document.querySelector("#titleMonth");
-let titleYear = document.querySelector("#titleYear");
-console.log(currDay, currMonth);
 
-let monthName = [
+const monthNames = [
   "Enero",
   "Febrero",
   "Marzo",
@@ -35,352 +25,267 @@ let monthName = [
   "Diciembre",
 ];
 
-titleMonth.innerHTML = monthName[parseInt(currMonth) - 1];
-titleYear.innerHTML = currYear;
+// Sports API Configuration
+const sportsConfig = [
+  { url: "soccer/mex.1", emoji: "⚽️ 🇲🇽", name: "Liga MX", class: "bg-soccer" },
+  { url: "soccer/mex.2", emoji: "⚽️ 🇲🇽", name: "Liga Exp", class: "bg-soccer" },
+  { url: "soccer/esp.1", emoji: "⚽️ 🇪🇸", name: "La Liga", class: "bg-soccer" },
+  { url: "soccer/eng.1", emoji: "⚽️ 🏴󠁧󠁢󠁥󠁮󠁧󠁿", name: "Premier League", class: "bg-soccer" },
+  { url: "soccer/ger.1", emoji: "⚽️ 🇩🇪", name: "Bundesliga", class: "bg-soccer" },
+  { url: "soccer/ita.1", emoji: "⚽️ 🇮🇹", name: "Serie A", class: "bg-soccer" },
+  {
+    url: "soccer/por.1",
+    emoji: "⚽️ 🇵🇹",
+    name: "Portugal League",
+    class: "bg-soccer",
+  },
+  { url: "soccer/ned.1", emoji: "⚽️ 🇳🇱", name: "Eredivisie", class: "bg-soccer" },
+  { url: "soccer/fra.1", emoji: "⚽️ 🇫🇷", name: "Ligue 1", class: "bg-soccer" },
+  {
+    url: "soccer/UEFA.CHAMPIONS",
+    emoji: "⚽️ 🏆",
+    name: "UEFA Champions",
+    class: "bg-soccer",
+  },
+  {
+    url: "soccer/UEFA.EUROPA",
+    emoji: "⚽️ 🥈",
+    name: "UEFA Europa",
+    class: "bg-soccer",
+  },
+  { url: "football/nfl", emoji: "🏈", name: "NFL", class: "bg-football" },
+  { url: "basketball/nba", emoji: "🏀", name: "NBA", class: "bg-basketball" },
+  { url: "hockey/nhl", emoji: "🏒", name: "NHL", class: "bg-hockey" },
+  { url: "baseball/mlb", emoji: "⚾️", name: "MLB", class: "bg-baseball" },
+  {
+    url: "soccer/CONMEBOL.AMERICA",
+    emoji: "Copa America ⚽️🏆",
+    name: "Copa America",
+    class: "bg-soccer",
+  },
+  {
+    url: "soccer/UEFA.EURO",
+    emoji: "Euro Copa ⚽️🏆",
+    name: "Euro Copa",
+    class: "bg-soccer",
+  },
+  { url: "tennis/atp", emoji: "🎾", name: "Tennis ATP", class: "bg-tennis" },
+  {
+    url: "tennis/wta",
+    emoji: "🎾 WTA",
+    name: "Tennis WTA",
+    class: "bg-tennis",
+  },
+  { url: "soccer/usa.1", emoji: "⚽️ 🇺🇸", name: "MLS", class: "bg-soccer" },
+  { url: "racing/f1", emoji: "🏎️ 🏁", name: "F1", class: "bg-racing" },
+];
 
+// Initialize the calendar
+function initCalendar() {
+  updateCalendarDate();
+  generateCalendar(currYear, currentDate.getMonth());
+  fetchAndDisplayScores(currYear, currMonth, currDay);
+}
 
+// Update calendar date based on current offset
+function updateCalendarDate() {
+  const tempDate = new Date();
+  tempDate.setMonth(tempDate.getMonth() + monthOffset);
 
+  currYear = tempDate.getFullYear();
+  currMonth = ("0" + (tempDate.getMonth() + 1)).slice(-2);
+  currDay = ("0" + tempDate.getDate()).slice(-2);
 
-// Function to generate the calendar
+  titleMonth.textContent = monthNames[tempDate.getMonth()];
+  titleYear.textContent = currYear;
+}
+
+// Generate the calendar grid
 function generateCalendar(year, month) {
   const startDate = new Date(year, month, 1);
   const endDate = new Date(year, month + 1, 0);
   const daysInMonth = endDate.getDate();
   const startDay = startDate.getDay();
-  let html = "";
-  console.log("Start day: " + startDay + " startDate: " + startDate);
 
+  let html = "";
   let day = 1;
+
   for (let i = 0; i < 6; i++) {
     html += "<tr>";
     for (let j = 0; j < 7; j++) {
       if (i === 0 && j < startDay) {
         html += "<td></td>";
       } else if (day > daysInMonth) {
-        break;
+        html += "<td></td>";
       } else {
-        html += `<td class='day table-light' value='${day}' data-day='${day}'>${day}</td>`;
+        const isToday =
+          day === parseInt(currDay) && month === currentDate.getMonth();
+        const activeClass = isToday ? "day-active" : "";
+        html += `<td class='day table-light ${activeClass}' data-day='${day}'>${day}</td>`;
         day++;
       }
     }
     html += "</tr>";
+    if (day > daysInMonth) break;
   }
 
-  $("#calendar-body").html(html);
+  document.getElementById("calendar-body").innerHTML = html;
 }
 
-// Generate calendar for current month - currentDate.getMonth()
-const currentDate = new Date();
-generateCalendar(currentDate.getFullYear(), currMonth - 1);
+// Fetch and display sports scores
+async function fetchAndDisplayScores(year, month, day) {
+  const dateString = `${year}${month}${day}`;
+  sportsScoresList.innerHTML =
+    "<li class='list-group-item'>Loading scores...</li>";
 
-// Add click event listener to each day
-$(".day").click(function () {
-  $(".day").removeClass("day-active");
-  const dayNumber = $(this).data("day");
-  $(this).addClass("day-active");
-  // Here you can perform any action you want with the clicked day numbers
-  // Function Call
-  fetchAndDisplayScores(currYear, currMonth, ("0" + dayNumber).slice(-2));
-});
-// Function to fetch scores from the API and display them in the list
-function fetchAndDisplayScores(Year, Month, Day) {
-  // Fetch data from different sports
-  //LigaMX🇲🇽
-  const mexSoccerPromise = fetch(
-    `https://site.api.espn.com/apis/site/v2/sports/soccer/mex.1/scoreboard?dates=${Year}${Month}${Day}`
-  );
-  // Liga Exp🇲🇽
-  const mexExpSoccerPromise = fetch(
-    `https://site.api.espn.com/apis/site/v2/sports/soccer/mex.2/scoreboard?dates=${Year}${Month}${Day}`
-  );
-  //LaLiga🇪🇸
-  const espSoccerPromise = fetch(
-    `https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard?dates=${Year}${Month}${Day}`
-  );
-  //Premier League🏴󠁧󠁢󠁥󠁮󠁧󠁿
-  const engSoccerPromise = fetch(
-    `https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard?dates=${Year}${Month}${Day}`
-  );
-  //Bundesliga 1🇩🇪
-  const gerSoccerPromise = fetch(
-    `https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard?dates=${Year}${Month}${Day}`
-  );
-  //Serie A🇮🇹
-  const itaSoccerPromise = fetch(
-    `https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard?dates=${Year}${Month}${Day}`
-  );
-  //Portugal League 🇵🇹
-  const porSoccerPromise = fetch(
-    `https://site.api.espn.com/apis/site/v2/sports/soccer/por.1/scoreboard?dates=${Year}${Month}${Day}`
-  );
-  //Eredivisie 🇳🇱
-  const nedSoccerPromise = fetch(
-    `https://site.api.espn.com/apis/site/v2/sports/soccer/ned.1/scoreboard?dates=${Year}${Month}${Day}`
-  );
-  //Ligue 1 🇫🇷
-  const fraSoccerPromise = fetch(
-    `https://site.api.espn.com/apis/site/v2/sports/soccer/fra.1/scoreboard?dates=${Year}${Month}${Day}`
-  );
-  //UEFA Champions League
-  const uefaChampionsSoccerPromise = fetch(
-    `https://site.api.espn.com/apis/site/v2/sports/soccer/UEFA.CHAMPIONS/scoreboard?dates=${Year}${Month}${Day}`
-  );
-  //UEFA Europa League
-  const uefaEuropaSoccerPromise = fetch(
-    `https://site.api.espn.com/apis/site/v2/sports/soccer/UEFA.EUROPA/scoreboard?dates=${Year}${Month}${Day}`
-  );
-  //NFL
-  const footballPromise = fetch(
-    `https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=${Year}${Month}${Day}`
-  );
-  //NBA
-  const basketPromise = fetch(
-    `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${Year}${Month}${Day}`
-  );
-  //NHL
-  const hockeyPromise = fetch(
-    `https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard?dates=${Year}${Month}${Day}`
-  );
-  //MLB
-  const baseballPromise = fetch(
-    `https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=${Year}${Month}${Day}`
-  );
-  // Copa America🇲🇽
-  const copaAmericaPromise = fetch(
-    `https://site.api.espn.com/apis/site/v2/sports/soccer/CONMEBOL.AMERICA/scoreboard?dates=${Year}${Month}${Day}`
-  );
-  // Euro Copa🇲🇽
-  const euroCopaPromise = fetch(
-    `https://site.api.espn.com/apis/site/v2/sports/soccer/UEFA.EURO/scoreboard?dates=${Year}${Month}${Day}`
-  );
-  // Tennis ATP
-  const tennisAtpPromise = fetch(
-    `https://site.api.espn.com/apis/site/v2/sports/tennis/atp/scoreboard?dates=${Year}${Month}${Day}`
-  );
-  // Tennis WTA
-  const tennisWtaPromise = fetch(
-    `https://site.api.espn.com/apis/site/v2/sports/tennis/wta/scoreboard?dates=${Year}${Month}${Day}`
-  );
-  // MLS
-  const mlsPromise = fetch(
-    `https://site.api.espn.com/apis/site/v2/sports/soccer/usa.1/scoreboard?dates=${Year}${Month}${Day}`
-  );
-  // F1
-  const funoPromise = fetch(
-    `https://site.api.espn.com/apis/site/v2/sports/racing/f1/scoreboard?dates=${Year}${Month}${Day}`
-  );
+  try {
+    // Create all API requests
+    const requests = sportsConfig.map((sport) =>
+      fetch(
+        `https://site.api.espn.com/apis/site/v2/sports/${sport.url}/scoreboard?dates=${dateString}`
+      )
+        .then((response) => response.json())
+        .catch((error) => ({ error: true, sport }))
+    );
 
-  // Wait for both promises to resolve
-  Promise.all([
-    mexSoccerPromise,
-    mexExpSoccerPromise,
-    espSoccerPromise,
-    engSoccerPromise,
-    gerSoccerPromise,
-    itaSoccerPromise,
-    porSoccerPromise,
-    nedSoccerPromise,
-    fraSoccerPromise,
-    uefaChampionsSoccerPromise,
-    uefaEuropaSoccerPromise,
-    footballPromise,
-    basketPromise,
-    hockeyPromise,
-    baseballPromise,
-    copaAmericaPromise,
-    euroCopaPromise,
-    tennisAtpPromise,
-    tennisWtaPromise,
-    mlsPromise,
-    funoPromise,
-  ])
-    .then((responses) =>
-      Promise.all(responses.map((response) => response.json()))
-    )
-    .then((data) => {
-      const sportsScoresList = document.getElementById("sportsScores");
+    const responses = await Promise.all(requests);
 
-      // Clear
-      sportsScoresList.innerHTML = "";
+    // Clear loading message
+    sportsScoresList.innerHTML = "";
 
-      // F1
-      data[20].events.forEach((event) => {
-        const listItem = createListItemFuno(event, "🏎️ 🏁");
-        listItem.classList.add("bg-soccer");
-        sportsScoresList.appendChild(listItem);
-      });
-      // Copa America
-      data[16].events.forEach((event) => {
-        const listItem = createListItem(event, "Euro Copa ⚽️🏆");
-        listItem.classList.add("bg-soccer");
-        sportsScoresList.appendChild(listItem);
-      });
-      // Copa America
-      data[15].events.forEach((event) => {
-        const listItem = createListItem(event, "Copa America⚽️🏆");
-        listItem.classList.add("bg-soccer");
-        sportsScoresList.appendChild(listItem);
-      });
-      // LigaMX
-      data[0].events.forEach((event) => {
-        const listItem = createListItem(event, "⚽️ 🇲🇽");
-        listItem.classList.add("bg-soccer");
-        sportsScoresList.appendChild(listItem);
-      });
-      // LigaMX
-      data[1].events.forEach((event) => {
-        const listItem = createListItem(event, "⚽️ 🇲🇽");
-        listItem.classList.add("bg-soccer");
-        sportsScoresList.appendChild(listItem);
-      });
-      // La Liga
-      data[2].events.forEach((event) => {
-        const listItem = createListItem(event, "⚽️ 🇪🇸");
-        listItem.classList.add("bg-soccer");
-        sportsScoresList.appendChild(listItem);
-        console.log(data[2].events.length);
-      });
-      // Premier League
-      data[3].events.forEach((event) => {
-        const listItem = createListItem(event, "⚽️ 🏴󠁧󠁢󠁥󠁮󠁧󠁿");
-        listItem.classList.add("bg-soccer");
-        sportsScoresList.appendChild(listItem);
-      });
-      // MLS
-      data[19].events.forEach((event) => {
-        const listItem = createListItem(event, "⚽️ 🇺🇸");
-        listItem.classList.add("bg-soccer");
-        sportsScoresList.appendChild(listItem);
-      });
-      // Bundesliga 1🇩🇪
-      data[4].events.forEach((event) => {
-        const listItem = createListItem(event, "⚽️ 🇩🇪");
-        listItem.classList.add("bg-soccer");
-        sportsScoresList.appendChild(listItem);
-      });
-      // Serie A🇮🇹
-      data[5].events.forEach((event) => {
-        const listItem = createListItem(event, "⚽️ 🇮🇹");
-        listItem.classList.add("bg-soccer");
-        sportsScoresList.appendChild(listItem);
-      });
-      // Portugal 🇵🇹
-      data[6].events.forEach((event) => {
-        const listItem = createListItem(event, "⚽️ 🇵🇹");
-        listItem.classList.add("bg-soccer");
-        sportsScoresList.appendChild(listItem);
-      });
-      // Eredivisie 🇳🇱
-      data[7].events.forEach((event) => {
-        const listItem = createListItem(event, "⚽️ 🇳🇱");
-        listItem.classList.add("bg-soccer");
-        sportsScoresList.appendChild(listItem);
-      });
-      //Ligue 1 🇫🇷
-      data[8].events.forEach((event) => {
-        const listItem = createListItem(event, "⚽️ 🇫🇷");
-        listItem.classList.add("bg-soccer");
-        sportsScoresList.appendChild(listItem);
-      });
-      // UEFA Champions League 🏆
-      data[9].events.forEach((event) => {
-        const listItem = createListItem(event, "⚽️ 🏆");
-        listItem.classList.add("bg-soccer");
-        sportsScoresList.appendChild(listItem);
-      });
-      // UEFA Europa League 🥈
-      data[10].events.forEach((event) => {
-        const listItem = createListItem(event, "⚽️ 🥈");
-        listItem.classList.add("bg-soccer");
-        sportsScoresList.appendChild(listItem);
-      });
-      // NFL
-      data[11].events.forEach((event) => {
-        const listItem = createListItem(event, "🏈");
-        listItem.classList.add("bg-baseball");
-        sportsScoresList.appendChild(listItem);
-      });
-      // NBA
-      data[12].events.forEach((event) => {
-        const listItem = createListItem(event, "🏀");
-        listItem.classList.add("bg-baseball");
-        sportsScoresList.appendChild(listItem);
-      });
-      // Basket
-      data[13].events.forEach((event) => {
-        const listItem = createListItem(event, "🏒");
-        listItem.classList.add("bg-basketball");
-        sportsScoresList.appendChild(listItem);
-      });
-      // MLB
-      data[14].events.forEach((event) => {
-        const listItem = createListItem(event, "⚾️");
-        sportsScoresList.appendChild(listItem);
-      });
-      // Tennis ATP
-      data[17].events.forEach((event) => {
-        const listItem = createListItemTennisNew(event, "🎾");
-        sportsScoresList.appendChild(listItem);
-      });
-      // Tennis WTA
-      data[18].events.forEach((event) => {
-        const listItem = createListItemTennisNew(event, "🎾 WTA - ");
-        sportsScoresList.appendChild(listItem);
-      });
-    })
-    .catch((error) => console.error("Error fetching data:", error));
-}
+    // Process each response
+    responses.forEach((data, index) => {
+      if (data.error) {
+        console.error(`Error fetching ${sportsConfig[index].name}`);
+        return;
+      }
 
-// List items
-function createListItem(event, emoji) {
-  const listItem = document.createElement("li");
-  listItem.className = "list-group-item";
-  const date = new Date(event.date);
-  const formattedTime = date.toLocaleString("en-UK", { timeStyle: "short" });
-  const formattedDate = date.toLocaleString("en-UK", { dateStyle: "long" });
-  listItem.innerHTML = `
-    <h5>${emoji} ${event.competitions[0].competitors[0].team.displayName} vs ${event.competitions[0].competitors[1].team.displayName}</h5>
-      <p><strong>${formattedTime}</strong> | ${formattedDate}</p>
-    `;
-  return listItem;
-}
-// List items
-function createListItemTennisNew(event, emoji) {
-  const listItem = document.createElement("div");
-  let eventNum = event.groupings[0].competitions.length;
-  const fecha = new Date(event.date);
-  for (let i = 0; i < eventNum; i++) {
-    const date = new Date(event.groupings[0].competitions[i].date);
-    let formattedTime = date.toLocaleString("es-MX", { timeStyle: "short" });
-    let formattedDate = date.toLocaleString("es-MX", { dateStyle: "long" });
-    let DayNew = date.getDate();
-    if (DayNew === parseInt(currDay)) {
-      console.log(formattedDate);
-      listItem.innerHTML += `<li class="list-group-item">
-      <h5>${emoji} ${event.name} - ${event.groupings[0].competitions[i].competitors[0].athlete.displayName} vs ${event.groupings[0].competitions[i].competitors[1].athlete.displayName}</h5>
-    <strong>${formattedTime}</strong> | ${formattedDate}</li>`;
+      if (data.events && data.events.length > 0) {
+        if (sportsConfig[index].url.includes("tennis")) {
+          data.events.forEach((event) => {
+            const listItem = createTennisListItem(event, sportsConfig[index]);
+            sportsScoresList.appendChild(listItem);
+          });
+        } else if (sportsConfig[index].url.includes("racing")) {
+          data.events.forEach((event) => {
+            const listItem = createRacingListItem(event, sportsConfig[index]);
+            sportsScoresList.appendChild(listItem);
+          });
+        } else {
+          data.events.forEach((event) => {
+            const listItem = createSportsListItem(event, sportsConfig[index]);
+            sportsScoresList.appendChild(listItem);
+          });
+        }
+      }
+    });
+
+    if (sportsScoresList.innerHTML === "") {
+      sportsScoresList.innerHTML =
+        "<li class='list-group-item'>No games scheduled for this date</li>";
     }
+  } catch (error) {
+    console.error("Error fetching scores:", error);
+    sportsScoresList.innerHTML =
+      "<li class='list-group-item'>Error loading scores. Please try again.</li>";
   }
-  return listItem;
 }
-// List items
-function createListItemFuno(event, emoji) {
+
+// Helper function to create sports list items
+function createSportsListItem(event, sport) {
   const listItem = document.createElement("li");
-  listItem.className = "list-group-item";
+  listItem.className = `list-group-item ${sport.class}`;
   const date = new Date(event.date);
-  const formattedTime = date.toLocaleString("es-MX", { timeStyle: "short" });
-  const formattedDate = date.toLocaleString("es-MX", { dateStyle: "long" });
+
   listItem.innerHTML = `
-      <h5>${emoji} ${event.shortName} </h5>
-      <p><strong>${formattedTime}</strong> | ${formattedDate}</p>
-    `;
+    <h5>${sport.emoji} ${
+    event.competitions[0].competitors[0].team.displayName
+  } vs 
+    ${event.competitions[0].competitors[1].team.displayName}</h5>
+    <p><strong>${date.toLocaleTimeString("en-US", {
+      timeStyle: "short",
+    })}</strong> | 
+    ${date.toLocaleDateString("en-US", { dateStyle: "long" })}</p>
+  `;
+
   return listItem;
 }
 
-function sportVal() {
-  let buttonValue = target.value;
-  console.log(buttonValue);
+// Helper function for tennis events
+function createTennisListItem(event, sport) {
+  const container = document.createElement("div");
+
+  event.groupings[0].competitions.forEach((competition) => {
+    const date = new Date(competition.date);
+    const listItem = document.createElement("li");
+    listItem.className = `list-group-item ${sport.class}`;
+
+    listItem.innerHTML = `
+      <h5>${sport.emoji} ${event.name} - ${
+      competition.competitors[0].athlete.displayName
+    } vs 
+      ${competition.competitors[1].athlete.displayName}</h5>
+      <p><strong>${date.toLocaleTimeString("en-US", {
+        timeStyle: "short",
+      })}</strong> | 
+      ${date.toLocaleDateString("en-US", { dateStyle: "long" })}</p>
+    `;
+
+    container.appendChild(listItem);
+  });
+
+  return container;
 }
 
-// Function Call
-fetchAndDisplayScores(currYear, currMonth, currDay);
+// Helper function for racing events
+function createRacingListItem(event, sport) {
+  const listItem = document.createElement("li");
+  listItem.className = `list-group-item ${sport.class}`;
+  const date = new Date(event.date);
+
+  listItem.innerHTML = `
+    <h5>${sport.emoji} ${event.shortName}</h5>
+    <p><strong>${date.toLocaleTimeString("en-US", {
+      timeStyle: "short",
+    })}</strong> | 
+    ${date.toLocaleDateString("en-US", { dateStyle: "long" })}</p>
+  `;
+
+  return listItem;
+}
+
+// Event Listeners
+prevMonth.addEventListener("click", () => {
+  monthOffset--;
+  updateCalendarDate();
+  generateCalendar(
+    currYear,
+    new Date(currYear, parseInt(currMonth) - 1, 1).getMonth()
+  );
+  fetchAndDisplayScores(currYear, currMonth, currDay);
+});
+
+nextMonth.addEventListener("click", () => {
+  monthOffset++;
+  updateCalendarDate();
+  generateCalendar(
+    currYear,
+    new Date(currYear, parseInt(currMonth) - 1, 1).getMonth()
+  );
+  fetchAndDisplayScores(currYear, currMonth, currDay);
+});
+
+// Use event delegation for calendar day clicks
+document.getElementById("calendar-body").addEventListener("click", (e) => {
+  if (e.target.classList.contains("day")) {
+    document
+      .querySelectorAll(".day")
+      .forEach((day) => day.classList.remove("day-active"));
+    e.target.classList.add("day-active");
+    const dayNumber = e.target.dataset.day;
+    fetchAndDisplayScores(currYear, currMonth, ("0" + dayNumber).slice(-2));
+  }
+});
+
+// Initialize the application
+initCalendar();
