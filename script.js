@@ -100,11 +100,68 @@ const sportsConfig = [
   { url: "racing/f1", emoji: "🏎️ 🏁", name: "F1", class: "bg-racing" },
 ];
 
+const sportFiltersConfig = [
+  { id: "all", name: "Todos", emoji: "🏆", class: "bg-light" },
+  { id: "soccer", name: "Fútbol", emoji: "⚽️", class: "bg-soccer" },
+  { id: "football", name: "NFL", emoji: "🏈", class: "bg-football" },
+  { id: "basketball", name: "NBA", emoji: "🏀", class: "bg-basketball" },
+  { id: "baseball", name: "MLB", emoji: "⚾️", class: "bg-baseball" },
+  { id: "hockey", name: "NHL", emoji: "🏒", class: "bg-hockey" },
+  { id: "tennis", name: "Tenis", emoji: "🎾", class: "bg-tennis" },
+  { id: "racing", name: "F1", emoji: "🏎️", class: "bg-racing" },
+];
+
 // Initialize the calendar
 function initCalendar() {
   updateCalendarDate();
-  generateCalendar(currYear, currentDate.getMonth());
-  fetchAndDisplayScores(currYear, currMonth, currDay);
+  generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
+  createSportFilters(); // Add this line
+  fetchAndDisplayScores(
+    currentDate.getFullYear(),
+    formatTwoDigits(currentDate.getMonth() + 1),
+    formatTwoDigits(currentDate.getDate())
+  );
+}
+
+// Add these new functions
+function createSportFilters() {
+  const filtersContainer = document.getElementById('sportFilters');
+  filtersContainer.innerHTML = '';
+  
+  sportFiltersConfig.forEach(filter => {
+    const button = document.createElement('button');
+    button.className = `btn btn-sm ${filter.class} sport-filter`;
+    button.dataset.sport = filter.id;
+    button.innerHTML = `${filter.emoji} ${filter.name}`;
+    
+    if (filter.id === 'all') {
+      button.classList.add('active');
+    }
+    
+    button.addEventListener('click', handleSportFilterClick);
+    filtersContainer.appendChild(button);
+  });
+}
+
+function handleSportFilterClick(event) {
+  const sport = event.currentTarget.dataset.sport;
+  
+  // Update active button
+  document.querySelectorAll('.sport-filter').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  event.currentTarget.classList.add('active');
+  
+  // Filter events
+  if (sport === 'all') {
+    document.querySelectorAll('.list-group-item').forEach(item => {
+      item.style.display = 'block';
+    });
+  } else {
+    document.querySelectorAll('.list-group-item').forEach(item => {
+      item.style.display = item.classList.contains(`bg-${sport}`) ? 'block' : 'none';
+    });
+  }
 }
 
 // Update calendar date based on current offset
