@@ -1,96 +1,253 @@
-body{
-    background-color: #d72828 !important;
+:root {
+  --primary-color: #d72828;
+  --secondary-color: #ffffff;
+  --text-color: #333333;
+  --light-gray: #f8f9fa;
+  --dark-gray: #343a40;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
 }
 
-h1, h2{
-    color: #fff;
-}
-.day-active{
-    background-color: #e0e0e0 !important;
-}
- @media (min-width: 768px){
-.container, .container-md, .container-sm {
-    max-width: 90% !important;
-}
-}
-.switch-month{
- display:flex;
- justify-content:space-between;
- padding: 10px;
-}
-.switch-arrow{
-    background-color: #d72828;
-    border: 2px solid #fff;
-    color: #fff;
-    border-radius: 15%;
-    font-size: 1.5rem;
-}
-.switch-arrow:hover{
-    opacity: 0.8;
-}
-.filter-sports{
-    background-color: #fff;
-}
-.list-group{
-    background-color: #fff;
-}
-.bg-soccer{
-    background-color: #00d9ff30 !important;
-}
-.bg-baseball{
-    background-color: #cbbfff9d !important;
-}
-.bg-basketball{
-    background-color: #ffcf4c5e !important;
+/* Base Styles */
+body {
+  background-color: var(--primary-color) !important;
+  color: var(--text-color);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  min-height: 100vh;
 }
 
-.btn-soccer{
-    background-color: #00d9ff !important;
-    border-color: #00d9ff !important;;
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-color);
+  font-weight: 600;
 }
-.btn-baseball{
-    background-color: #cbbfff !important;
-    border-color: #cbbfff !important;;
+#sportsScores h5{
+    font-weight: 700;
+    font-size: 1.2rem;
 }
-.btn-basketball{
-    background-color: #ffcf4c !important;
-    border-color: #ffcf4c !important;;
+.text-secondary{
+    color: var(--secondary-color) !important;
 }
-.btn-football{
-    background-color: #ff8c90 !important;
-    border-color: #ff8c90 !important;;
-}
-.btn-hockey{
-    background-color: #e2e2e2 !important;
-    border-color: #e2e2e2 !important;;
+/* Layout */
+.container {
+  max-width: 95% !important;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
 }
 
-table.table-light{
-    text-align: center;
-}
-.table-dark>th{
-    background-color: #343a40 !important;
-}
-
-.table td, .table th{
-    background-color: transparent;
-}
-.table-light tbody+tbody, .table-light td, .table-light th, .table-light thead th{
-    border: none !important;
-}
-.table-light{
-    border-radius: 5px;
-}
-.table thead th{
-    border-bottom: 2px solid #dee2e6 !important;
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px !important;
+  }
 }
 
-td.day{
-    cursor: pointer;
-}ß
-.table td, .table th {
-    padding: .75rem 0.25rem;}
-.day:hover{
-    color:#d72828;
-    }
+/* Calendar Components */
+.card {
+  border: none;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
 
+.card-header {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+/* Month Navigation */
+.switch-month {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+}
+
+.switch-arrow {
+  background-color: var(--primary-color);
+  border: 2px solid var(--secondary-color);
+  color: var(--secondary-color);
+  border-radius: 0.25rem;
+  font-size: 1.25rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.switch-arrow:hover {
+  opacity: 0.8;
+  transform: scale(1.05);
+}
+
+/* Calendar Table */
+.calendar-table {
+  width: 100%;
+}
+
+.calendar-table thead th {
+  text-align: center;
+  padding: 0.75rem 0.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: var(--secondary-color);
+  background-color: var(--primary-color);
+}
+
+.calendar-table tbody td {
+  text-align: center;
+  padding: 0.75rem 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.calendar-table tbody td:not(.empty):hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--secondary-color);
+}
+
+.day-active {
+  background-color: var(--secondary-color) !important;
+  color: var(--primary-color) !important;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+/* Events List */
+.list-group {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.list-group-item {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.list-group-item:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.list-group-item h5 {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+/* Sport Specific Backgrounds */
+.bg-soccer {
+  background-color: rgba(0, 217, 255, 0.15) !important;
+  border-left: 4px solid #00d9ff !important;
+}
+
+.bg-baseball {
+  background-color: rgba(203, 191, 255, 0.15) !important;
+  border-left: 4px solid #cbbfff !important;
+}
+
+.bg-basketball {
+  background-color: rgba(255, 207, 76, 0.15) !important;
+  border-left: 4px solid #ffcf4c !important;
+}
+
+.bg-football {
+  background-color: rgba(255, 140, 144, 0.15) !important;
+  border-left: 4px solid #ff8c90 !important;
+}
+
+.bg-hockey {
+  background-color: rgba(226, 226, 226, 0.15) !important;
+  border-left: 4px solid #e2e2e2 !important;
+}
+
+.bg-tennis {
+  background-color: rgba(40, 167, 69, 0.15) !important;
+  border-left: 4px solid #28a745 !important;
+}
+
+/* Loading and Empty States */
+#loadingIndicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+#noEventsMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 767.98px) {
+  .calendar-table thead th {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.65rem;
+  }
+  
+  .calendar-table tbody td {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.85rem;
+  }
+  
+  .list-group-item {
+    padding: 1rem;
+  }
+  
+  .list-group-item h5 {
+    font-size: 1rem;
+  }
+}
+
+/* Utility Classes */
+.text-muted {
+  color: #6c757d !important;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.shadow-sm {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+/* Button Styles (for future filter buttons) */
+.btn-outline {
+  border: 1px solid currentColor;
+  background-color: transparent;
+}
+
+.btn-outline:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Animation for loading */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}

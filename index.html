@@ -1,75 +1,140 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caliente.mx Calendar</title>
+  <meta name="description" content="Calendario de eventos deportivos - Todos los partidos y competiciones en un solo lugar">
+  <title>Calendario Deportivo | Caliente.mx</title>
+  
   <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome for better icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom CSS -->
   <link href="style.css" rel="stylesheet">
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+  <div class="container py-4">
+    <header class="text-center mb-4">
+      <h1 class="display-4 fw-bold text-secondary">
+        <i class="fas fa-calendar-alt me-2"></i>Calendario Deportivo
+      </h1>
+      <p class="lead text-secondary">Todos los eventos deportivos en un solo lugar</p>
+    </header>
 
-<div class="container">
-  <!-- -->
-  <center><h1> Calendario Sports
-  </h1></center>
-  <div class="calendar wrap">
-    <div class="row">
-      <div class="col-12 col-md-6 sticky">
+    <main>
+      <div class="row g-4">
+        <!-- Calendar Section -->
+        <div class="col-lg-5">
+          <div class="card shadow-sm h-100">
+            <div class="card-header bg-dark text-light">
+              <div class="d-flex justify-content-between align-items-center">
+                <button id="prevMonth" class="btn btn-sm btn-light" aria-label="Mes anterior">
+                  <i class="fas fa-chevron-left"></i>
+                </button>
+                <h2 class="h5 mb-0">
+                  <span id="titleMonth">Agosto</span> 
+                  <span id="titleYear">2024</span>
+                </h2>
+                <button id="nextMonth" class="btn btn-sm btn-light" aria-label="Mes siguiente">
+                  <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+            
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered mb-0" aria-label="Calendario de eventos deportivos">
+                  <thead class="table-danger">
+                    <tr>
+                      <th scope="col" class="text-center">Dom</th>
+                      <th scope="col" class="text-center">Lun</th>
+                      <th scope="col" class="text-center">Mar</th>
+                      <th scope="col" class="text-center">Mié</th>
+                      <th scope="col" class="text-center">Jue</th>
+                      <th scope="col" class="text-center">Vie</th>
+                      <th scope="col" class="text-center">Sáb</th>
+                    </tr>
+                  </thead>
+                  <tbody id="calendar-body" class="table-light">
+                    <!-- Calendar days will be inserted here dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
 
-<!-- <label for="start">Start date:</label>
-<input type="date" id="inputCal" name="trip-start" value="2018-07-22" min="2018-01-01" max="2018-12-31" /> -->
-      <div class="switch-month">
-        <button class="switch-arrow" id="prevMonth">◀︎</button>
-        <h2><span id="titleMonth">Agosto</span> <span id="titleYear">2024</span></h2>
-        <button class="switch-arrow" id="nextMonth">▶︎</button>
+        <!-- Events Section -->
+        <div class="col-lg-7">
+          <div class="card shadow-sm h-100">
+            <div class="card-header bg-dark text-light">
+              <h2 class="h5 mb-0">Eventos del día</h2>
+            </div>
+            <div class="card-body p-0">
+              <!-- <div id="loadingIndicator" class="text-center py-4">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="mt-2 mb-0">Cargando eventos...</p>
+              </div> -->
+              <div class="col-12 col-md-6 main"><ul id="sportsScores" class="list-group"></ul></div>
+              <ul id="sportsScores" class="list-group list-group-flush" style="display: none;">
+                <!-- Sports events will be inserted here dynamically -->
+              </ul>
+              <div id="noEventsMessage" class="text-center py-4" style="display: none;">
+                <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                <h3 class="h5">No hay eventos programados</h3>
+                <p class="text-muted">Selecciona otra fecha para ver los eventos</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-        <table class="table table-light">
-          <thead>
-            <tr>
-              <th scope="col">Sun</th>
-              <th scope="col">Mon</th>
-              <th scope="col">Tue</th>
-              <th scope="col">Wed</th>
-              <th scope="col">Thu</th>
-              <th scope="col">Fri</th>
-              <th scope="col">Sat</th>
-            </tr>
-          </thead>
-          <tbody id="calendar-body">
-            <!-- Calendar days will be inserted here dynamically -->
-          </tbody>
-        </table>
-        
+
+      <!-- Sport Filter Buttons (commented but improved) -->
+      <!--
+      <div class="row mt-4">
+        <div class="col">
+          <div class="btn-group d-flex flex-wrap" role="group" aria-label="Filtros deportivos">
+            <button type="button" class="btn btn-outline-primary flex-grow-0 sport-filter" data-sport="soccer">
+              <i class="fas fa-futbol me-1"></i> Fútbol
+            </button>
+            <button type="button" class="btn btn-outline-danger flex-grow-0 sport-filter" data-sport="baseball">
+              <i class="fas fa-baseball-ball me-1"></i> Béisbol
+            </button>
+            <button type="button" class="btn btn-outline-success flex-grow-0 sport-filter" data-sport="basketball">
+              <i class="fas fa-basketball-ball me-1"></i> Baloncesto
+            </button>
+            <button type="button" class="btn btn-outline-dark flex-grow-0 sport-filter" data-sport="football">
+              <i class="fas fa-football-ball me-1"></i> Fútbol Americano
+            </button>
+            <button type="button" class="btn btn-outline-info flex-grow-0 sport-filter" data-sport="hockey">
+              <i class="fas fa-hockey-puck me-1"></i> Hockey
+            </button>
+            <button type="button" class="btn btn-outline-warning flex-grow-0 sport-filter" data-sport="tennis">
+              <i class="fas fa-table-tennis me-1"></i> Tenis
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="col-12 col-md-6 main"><ul id="sportsScores" class="list-group"></ul></div>
-    </div>
+      -->
+    </main>
+
+    <footer class="mt-5 pt-4 text-center text-light small">
+      <p>© <span id="currentYear"></span> Caliente.mx - Todos los derechos reservados</p>
+    </footer>
   </div>
-  <!-- <div class="row">
-    <div class="col">
-      <div class="input-group mb-3">
-        <button class="btn btn-primary btn-soccer btn-lg" type="button" onclick="sportVal();" value="1">⚽️</button>
-        <button class="btn btn-primary btn-baseball btn-lg" type="button" onclick="sportVal();" value="2">⚾️</button>
-        <button class="btn btn-primary btn-basketball btn-lg" type="button" onclick="sportVal();" value="3">🏀</button>
-        <button class="btn btn-primary btn-football btn-lg" type="button" onclick="sportVal();" value="4">🏈</button>
-        <button class="btn btn-primary btn-hockey btn-lg" type="button" onclick="sportVal();" value="5">🏒</button>
-        <button class="btn btn-light btn-lg" type="button" onclick="sportVal();" value="6">🎾</button> 
-        <button class="btn btn-light btn-lg" type="button" onclick="sportVal();" value="7">🏎️</button> 
-        <button class="btn btn-light btn-lg" type="button" onclick="sportVal();" value="8">🥊</button>
-      </div>
-    </div>
-  </div> -->
-  
-</div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<!-- Bootstrap JS and jQuery (required for Bootstrap) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<script src="script.js"></script>
-  
+  <!-- JavaScript Libraries -->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Your custom script -->
+  <script src="script.js"></script>
 
+  <script>
+    // Set current year in footer
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>

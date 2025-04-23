@@ -28,10 +28,25 @@ const monthNames = [
 // Sports API Configuration
 const sportsConfig = [
   { url: "soccer/mex.1", emoji: "⚽️ 🇲🇽", name: "Liga MX", class: "bg-soccer" },
-  { url: "soccer/mex.2", emoji: "⚽️ 🇲🇽", name: "Liga Exp", class: "bg-soccer" },
+  {
+    url: "soccer/mex.2",
+    emoji: "⚽️ 🇲🇽",
+    name: "Liga Exp",
+    class: "bg-soccer",
+  },
   { url: "soccer/esp.1", emoji: "⚽️ 🇪🇸", name: "La Liga", class: "bg-soccer" },
-  { url: "soccer/eng.1", emoji: "⚽️ 🏴󠁧󠁢󠁥󠁮󠁧󠁿", name: "Premier League", class: "bg-soccer" },
-  { url: "soccer/ger.1", emoji: "⚽️ 🇩🇪", name: "Bundesliga", class: "bg-soccer" },
+  {
+    url: "soccer/eng.1",
+    emoji: "⚽️ 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+    name: "Premier League",
+    class: "bg-soccer",
+  },
+  {
+    url: "soccer/ger.1",
+    emoji: "⚽️ 🇩🇪",
+    name: "Bundesliga",
+    class: "bg-soccer",
+  },
   { url: "soccer/ita.1", emoji: "⚽️ 🇮🇹", name: "Serie A", class: "bg-soccer" },
   {
     url: "soccer/por.1",
@@ -39,7 +54,12 @@ const sportsConfig = [
     name: "Portugal League",
     class: "bg-soccer",
   },
-  { url: "soccer/ned.1", emoji: "⚽️ 🇳🇱", name: "Eredivisie", class: "bg-soccer" },
+  {
+    url: "soccer/ned.1",
+    emoji: "⚽️ 🇳🇱",
+    name: "Eredivisie",
+    class: "bg-soccer",
+  },
   { url: "soccer/fra.1", emoji: "⚽️ 🇫🇷", name: "Ligue 1", class: "bg-soccer" },
   {
     url: "soccer/UEFA.CHAMPIONS",
