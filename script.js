@@ -288,30 +288,62 @@ function createSportsListItem(event, sport) {
   return listItem;
 }
 
-// Helper function for tennis events
+// Helper function for tennis events - NOW FILTERED BY CURRENT DAY
 function createTennisListItem(event, sport) {
   const container = document.createElement("div");
+  const currentDate = new Date();
+  const currentDay = currentDate.getDate();
+  const currentMonth = currentDate.getMonth();
+  const currentYear = currentDate.getFullYear();
 
   event.groupings[0].competitions.forEach((competition) => {
-    const date = new Date(competition.date);
-    const listItem = document.createElement("li");
-    listItem.className = `list-group-item ${sport.class}`;
+    const matchDate = new Date(competition.date);
+    const matchDay = matchDate.getDate();
+    const matchMonth = matchDate.getMonth();
+    const matchYear = matchDate.getFullYear();
 
-    listItem.innerHTML = `
-      <h5>${sport.emoji} ${event.name} - ${
-      competition.competitors[0].athlete.displayName
-    } vs 
-      ${competition.competitors[1].athlete.displayName}</h5>
-      <p><strong>${date.toLocaleTimeString("en-US", {
-        timeStyle: "short",
-      })}</strong> | 
-      ${date.toLocaleDateString("en-US", { dateStyle: "long" })}</p>
-    `;
+    // Only process matches for today
+    if (matchDay === currentDay && matchMonth === currentMonth && matchYear === currentYear) {
+      const listItem = document.createElement("li");
+      listItem.className = `list-group-item ${sport.class}`;
+      
+      // Get player flags if available
+      const player1Flag = competition.competitors[0].athlete.flag?.href || '';
+      const player2Flag = competition.competitors[1].athlete.flag?.href || '';
+      const player1FlagAlt = competition.competitors[0].athlete.flag?.alt || '';
+      const player2FlagAlt = competition.competitors[1].athlete.flag?.alt || '';
+      
+      // Get round information
+      const round = competition.round?.displayName || 'Match';
 
-    container.appendChild(listItem);
+      listItem.innerHTML = `
+        <div class="tennis-match">
+          <h5>${sport.emoji} ${event.name} - ${round} </h5>
+          <div class="match-details">
+            <p class="players">
+              ${competition.competitors[0].athlete.displayName}
+              <img src="${player1Flag}" alt="${player1FlagAlt}" class="player-flag"> 
+              vs
+              ${competition.competitors[1].athlete.displayName}
+              <img src="${player2Flag}" alt="${player2FlagAlt}" class="player-flag">
+            </p>
+            <p class="time-date">
+              <strong>
+                ${matchDate.toLocaleTimeString("en-US", {
+                  timeStyle: "short",
+                })}
+              </strong>
+            </p>
+          </div>
+        </div>
+      `;
+
+      container.appendChild(listItem);
+    }
   });
 
-  return container;
+  // Only return container if it has children (matches for today)
+  return container.children.length > 0 ? container : null;
 }
 
 // Helper function for racing events

@@ -2,7 +2,7 @@
   --primary-color: #d72828;
   --secondary-color: #ffffff;
   --text-color: #333333;
-  --light-gray: #f8f9fa;
+  --light-gray: #bcbcbc;
   --dark-gray: #343a40;
   --success-color: #28a745;
   --warning-color: #ffc107;
@@ -110,10 +110,12 @@ h1, h2, h3, h4, h5, h6 {
   background-color: rgba(255, 255, 255, 0.1);
   color: var(--secondary-color);
 }
-
+.day{
+    cursor: pointer;
+}
 .day-active {
-  background-color: var(--secondary-color) !important;
-  color: var(--primary-color) !important;
+  background-color: var(--primary-color) !important;
+  color: var(--secondary-color) !important;
   font-weight: bold;
   border-radius: 50%;
   width: 2rem;
@@ -275,7 +277,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .sport-filter.active {
-  border: 1px solid var(--dark-gray);
+  border: 1px solid var(--light-gray);
   font-weight: 600;
 }
 
@@ -292,3 +294,13 @@ h1, h2, h3, h4, h5, h6 {
     flex-shrink: 0;
   }
 }
+
+
+.player-flag {
+  width: 20px;
+  height: 15px;
+  border-radius: 2px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.2);
+  margin-right: 0.3rem;
+}
+
