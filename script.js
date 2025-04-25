@@ -239,10 +239,21 @@ async function fetchAndDisplayScores(year, month, day) {
 
       if (data.events && data.events.length > 0) {
         if (sportsConfig[index].url.includes("tennis")) {
-          data.events.forEach((event) => {
-            const listItem = createTennisListItem(event, sportsConfig[index]);
-            sportsScoresList.appendChild(listItem);
-          });
+          if (data.events) {
+            data.events.forEach((event) => {
+              try {
+                const tennisItem = createTennisListItem(
+                  event,
+                  sportsConfig[index]
+                );
+                if (tennisItem) {
+                  sportsScoresList.appendChild(tennisItem);
+                }
+              } catch (error) {
+                console.error("Error processing tennis event:", error);
+              }
+            });
+          }
         } else if (sportsConfig[index].url.includes("racing")) {
           data.events.forEach((event) => {
             const listItem = createRacingListItem(event, sportsConfig[index]);
@@ -291,60 +302,103 @@ function createSportsListItem(event, sport) {
 // Helper function for tennis events - NOW FILTERED BY CURRENT DAY
 function createTennisListItem(event, sport) {
   const container = document.createElement("div");
-  const currentDate = new Date();
-  const currentDay = currentDate.getDate();
-  const currentMonth = currentDate.getMonth();
-  const currentYear = currentDate.getFullYear();
+
+  // Check if event has no groupings or empty groupings array
+  if (!event.groupings || event.groupings.length === 0) {
+    // Create a list item showing just the tournament info
+    const listItem = document.createElement("li");
+    listItem.className = `list-group-item ${sport.class}`;
+
+    const startDate = new Date(event.date);
+    const endDate = new Date(event.endDate);
+
+    listItem.innerHTML = `
+      <div class="tennis-tournament">
+        <h5>${sport.emoji} ${event.name || "Tennis Tournament"}</h5>
+        <div class="tournament-details">
+          <p>Tournament Dates: 
+            ${startDate.toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            })} - 
+            ${endDate.toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </p>
+          <p class="no-matches">No matches scheduled yet</p>
+        </div>
+      </div>
+    `;
+
+    container.appendChild(listItem);
+    return container;
+  }
+
+  const selectedDate = new Date();
+  const selectedDay = selectedDate.getDate();
+  const selectedMonth = selectedDate.getMonth();
+  const selectedYear = selectedDate.getFullYear();
 
   event.groupings[0].competitions.forEach((competition) => {
-    const matchDate = new Date(competition.date);
-    const matchDay = matchDate.getDate();
-    const matchMonth = matchDate.getMonth();
-    const matchYear = matchDate.getFullYear();
+    try {
+      const matchDate = new Date(competition.date);
+      const matchDay = matchDate.getDate();
+      const matchMonth = matchDate.getMonth();
+      const matchYear = matchDate.getFullYear();
 
-    // Only process matches for today
-    if (matchDay === currentDay && matchMonth === currentMonth && matchYear === currentYear) {
-      const listItem = document.createElement("li");
-      listItem.className = `list-group-item ${sport.class}`;
-      
-      // Get player flags if available
-      const player1Flag = competition.competitors[0].athlete.flag?.href || '';
-      const player2Flag = competition.competitors[1].athlete.flag?.href || '';
-      const player1FlagAlt = competition.competitors[0].athlete.flag?.alt || '';
-      const player2FlagAlt = competition.competitors[1].athlete.flag?.alt || '';
-      
-      // Get round information
-      const round = competition.round?.displayName || 'Match';
+      // Only process matches for selected day
+      if (
+        matchDay === selectedDay &&
+        matchMonth === selectedMonth &&
+        matchYear === selectedYear
+      ) {
+        const listItem = document.createElement("li");
+        listItem.className = `list-group-item ${sport.class}`;
 
-      listItem.innerHTML = `
-        <div class="tennis-match">
-          <h5>${sport.emoji} ${event.name} - ${round} </h5>
-          <div class="match-details">
-            <p class="players">
-              ${competition.competitors[0].athlete.displayName}
-              <img src="${player1Flag}" alt="${player1FlagAlt}" class="player-flag"> 
-              vs
-              ${competition.competitors[1].athlete.displayName}
-              <img src="${player2Flag}" alt="${player2FlagAlt}" class="player-flag">
-            </p>
-            <p class="time-date">
-              <strong>
-                ${matchDate.toLocaleTimeString("en-US", {
+        // Safely get player data with fallbacks
+        const player1 = competition.competitors?.[0]?.athlete || {};
+        const player2 = competition.competitors?.[1]?.athlete || {};
+
+        const player1Flag = player1.flag?.href || "";
+        const player2Flag = player2.flag?.href || "";
+        const player1FlagAlt = player1.flag?.alt || "";
+        const player2FlagAlt = player2.flag?.alt || "";
+
+        // Get round information with fallback
+        const round = competition.round?.displayName || "Match";
+
+        listItem.innerHTML = `
+          <div class="tennis-match">
+            <h5>${sport.emoji} ${event.name || "Tennis Match"} - ${round}</h5>
+            <div class="match-details">
+              <p class="players">
+                <img src="${player1Flag}" alt="${player1FlagAlt}" class="player-flag">
+                ${player1.displayName || "Player 1"} 
+                vs 
+                <img src="${player2Flag}" alt="${player2FlagAlt}" class="player-flag">
+                ${player2.displayName || "Player 2"}
+              </p>
+              <p class="time-date">
+                <strong>${matchDate.toLocaleTimeString("en-US", {
                   timeStyle: "short",
-                })}
-              </strong>
-            </p>
+                })}</strong>
+              </p>
+            </div>
           </div>
-        </div>
-      `;
+        `;
 
-      container.appendChild(listItem);
+        container.appendChild(listItem);
+      }
+    } catch (error) {
+      console.error("Error processing tennis competition:", error);
     }
   });
 
-  // Only return container if it has children (matches for today)
   return container.children.length > 0 ? container : null;
 }
+
 
 // Helper function for racing events
 function createRacingListItem(event, sport) {
