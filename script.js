@@ -4,6 +4,7 @@ const nextMonth = document.querySelector("#nextMonth");
 const titleMonth = document.querySelector("#titleMonth");
 const titleYear = document.querySelector("#titleYear");
 const sportsScoresList = document.getElementById("sportsScores");
+const exportBtn = document.querySelector("#exportMonth");
 
 // Date and Calendar Variables
 let monthOffset = 0;
@@ -115,11 +116,16 @@ const sportFiltersConfig = [
 function initCalendar() {
   updateCalendarDate();
   generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
-  createSportFilters(); // Add this line
+  createSportFilters();
+
+  // Set current day with proper formatting
+  currDay = formatTwoDigits(currentDate.getDate());
+
+  // Fetch current day's events
   fetchAndDisplayScores(
     currentDate.getFullYear(),
     formatTwoDigits(currentDate.getMonth() + 1),
-    formatTwoDigits(currentDate.getDate())
+    currDay
   );
 }
 
@@ -417,6 +423,129 @@ function createRacingListItem(event, sport) {
   return listItem;
 }
 
+// Add this with your other utility functions
+function formatTwoDigits(number) {
+  return number.toString().padStart(2, '0');
+}
+
+// Month to CSV export
+
+async function exportMonthToCSV() {
+  try {
+    // Show loading state
+    exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing Export...';
+    
+    // Get all days in the current month view
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1;
+    const daysInMonth = new Date(year, month, 0).getDate();
+    
+    // Collect all events for the month
+    let allEvents = [];
+    
+    // Fetch data for each day
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateString = `${year}${formatTwoDigits(month)}${formatTwoDigits(
+        day
+      )}`;
+      
+      // Fetch data for each sport for this day
+      for (const sport of sportsConfig) {
+        const response = await fetch(
+          `https://site.api.espn.com/apis/site/v2/sports/${sport.url}/scoreboard?dates=${dateString}`
+        );
+        const data = await response.json();
+        
+        if (data.events) {
+          data.events.forEach(event => {
+            // Process tennis events differently
+            if (sport.url.includes("tennis")) {
+              if (event.groupings && event.groupings.length > 0) {
+                event.groupings[0].competitions?.forEach(competition => {
+                  allEvents.push(processEventForCSV(event, competition, sport));
+                });
+              }
+            } else {
+              // Process other sports
+              event.competitions?.forEach(competition => {
+                allEvents.push(processEventForCSV(event, competition, sport));
+              });
+            }
+          });
+        }
+      }
+    }
+    
+    // Convert to CSV
+    const csv = convertToCSV(allEvents);
+    
+    // Download the file
+    downloadCSV(csv, `sports-events-${year}-${month}.csv`);
+    
+    // Reset button
+    exportBtn.innerHTML = '<i class="fas fa-download"></i> Export Month to CSV';
+    
+  } catch (error) {
+    console.error("Export failed:", error);
+    exportBtn.innerHTML = '<i class="fas fa-download"></i> Export Failed - Try Again';
+  }
+}
+
+function processEventForCSV(event, competition, sport) {
+  const date = new Date(competition.date || event.date);
+  const time = date.toLocaleTimeString("en-US", {timeStyle: "short"});
+  const dateStr = date.toLocaleDateString("en-US");
+  
+  // Handle tennis differently
+  if (sport.url.includes("tennis")) {
+    return {
+      Sport: sport.name,
+      Tournament: event.name,
+      Round: competition.round?.displayName || "",
+      Player1: competition.competitors?.[0]?.athlete?.displayName || "",
+      Player2: competition.competitors?.[1]?.athlete?.displayName || "",
+      Time: time,
+      Date: dateStr,
+      Venue: competition.venue?.fullName || "",
+      Status: competition.status?.type?.detail || "Scheduled"
+    };
+  }
+  
+  // Handle other sports
+  return {
+    Sport: sport.name,
+    Event: event.name,
+    Team1: competition.competitors?.[0]?.team?.displayName || "",
+    Team2: competition.competitors?.[1]?.team?.displayName || "",
+    Time: time,
+    Date: dateStr,
+    Venue: competition.venue?.fullName || "",
+    Status: competition.status?.type?.detail || "Scheduled"
+  };
+}
+
+function convertToCSV(data) {
+  const headers = Object.keys(data[0]).join(",");
+  const rows = data.map(obj => 
+    Object.values(obj).map(value => 
+      `"${String(value).replace(/"/g, '""')}"`
+    ).join(",")
+  );
+  return [headers, ...rows].join("\n");
+}
+
+function downloadCSV(csv, filename) {
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.setAttribute("hidden", "");
+  a.setAttribute("href", url);
+  a.setAttribute("download", filename);
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
 // Event Listeners
 prevMonth.addEventListener("click", () => {
   monthOffset--;
@@ -437,6 +566,8 @@ nextMonth.addEventListener("click", () => {
   );
   fetchAndDisplayScores(currYear, currMonth, currDay);
 });
+
+exportBtn.addEventListener("click", exportMonthToCSV);
 
 // Use event delegation for calendar day clicks
 document.getElementById("calendar-body").addEventListener("click", (e) => {
